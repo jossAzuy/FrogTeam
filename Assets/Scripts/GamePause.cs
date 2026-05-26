@@ -36,3 +36,4 @@ public class GamePause : MonoBehaviour
         isGamePaused = true;
     }
 }
+
