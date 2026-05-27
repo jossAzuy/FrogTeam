@@ -88,6 +88,7 @@ public class MainMenuController : MonoBehaviour
 
     private void SetupVolume()
     {
+        // Cargar el volumen guardado, o 1f (100%) si no hay ninguno guardado.
         float savedVolume = PlayerPrefs.GetFloat(VolumeKey, 1f);
 
         AudioListener.volume = savedVolume;
@@ -108,7 +109,7 @@ public class MainMenuController : MonoBehaviour
         UpdateVolumeText(value);
 
         PlayerPrefs.SetFloat(VolumeKey, value);
-        PlayerPrefs.Save();
+        PlayerPrefs.Save(); // Guardar inmediatamente después del cambio
     }
 
     private void UpdateVolumeText(float value)
@@ -126,6 +127,7 @@ public class MainMenuController : MonoBehaviour
 
     private void SetupFullscreen()
     {
+        // Cargar el estado de pantalla completa guardado, o el estado actual de la pantalla si no hay ninguno guardado.
         bool savedFullscreen = PlayerPrefs.GetInt(FullscreenKey, Screen.fullScreen ? 1 : 0) == 1;
 
         Screen.fullScreen = savedFullscreen;
@@ -142,15 +144,13 @@ public class MainMenuController : MonoBehaviour
         Screen.fullScreen = isFullscreen;
 
         PlayerPrefs.SetInt(FullscreenKey, isFullscreen ? 1 : 0);
+        PlayerPrefs.Save(); // Guardar inmediatamente después del cambio
 
+        // Si hay resoluciones únicas, aplicar la resolución actual para que el cambio de pantalla completa surta efecto.
         if (uniqueResolutions.Count > 0)
         {
             int currentIndex = resolutionDropdown != null ? resolutionDropdown.value : 0;
             ApplyResolution(currentIndex);
-        }
-        else
-        {
-            PlayerPrefs.Save();
         }
     }
 
@@ -198,8 +198,10 @@ public class MainMenuController : MonoBehaviour
 
         resolutionDropdown.AddOptions(options);
 
+        // Cargar el índice de resolución guardado, o el índice de la resolución actual si no hay ninguno guardado.
         int savedIndex = PlayerPrefs.GetInt(ResolutionKey, currentIndex);
 
+        // Asegurarse de que el índice guardado esté dentro de los límites válidos.
         savedIndex = Mathf.Clamp(savedIndex, 0, uniqueResolutions.Count - 1);
 
         resolutionDropdown.SetValueWithoutNotify(savedIndex);
@@ -231,7 +233,6 @@ public class MainMenuController : MonoBehaviour
         );
 
         PlayerPrefs.SetInt(ResolutionKey, index);
-        PlayerPrefs.Save();
+        PlayerPrefs.Save(); // Guardar inmediatamente después del cambio
     }
 }
-
