@@ -5,10 +5,10 @@ using System.Linq;
 
 public class SpawnManager : MonoBehaviour
 {
-    [Header("Configuración de Spawn")]
+    [Header("Configuracion de Spawn")]
     [Tooltip("Prefab del enemigo a spawnear.")]
     public GameObject enemyPrefab;
-    [Tooltip("Lista de Transforms que actúan como puntos de aparición.")]
+    [Tooltip("Lista de Transforms que actuan como puntos de aparicion.")]
     public Transform[] spawnPoints;
     [Tooltip("Cantidad de enemigos a spawnear en esta oleada.")]
     public int enemiesToSpawn = 5;
@@ -30,7 +30,7 @@ public class SpawnManager : MonoBehaviour
         }
         if (spawnPoints == null || spawnPoints.Length == 0)
         {
-            Debug.LogError("No hay puntos de aparición asignados en el SpawnManager.");
+            Debug.LogError("No hay puntos de aparicion asignados en el SpawnManager.");
             enabled = false;
             return;
         }
@@ -50,7 +50,7 @@ public class SpawnManager : MonoBehaviour
                 spawnedEnemies.Add(newEnemy);
                 currentEnemiesAlive++;
 
-                // Asegurarse de que el enemigo tenga un componente que notifique su destrucción
+                // Asegurarse de que el enemigo tenga un componente que notifique su destrucciï¿½n
                 EnemyHealth enemyHealth = newEnemy.GetComponent<EnemyHealth>(); // Asume que los enemigos tienen un script EnemyHealth
                 if (enemyHealth != null)
                 {
@@ -58,10 +58,10 @@ public class SpawnManager : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogWarning("El enemigo spawneado no tiene un componente EnemyHealth con un evento OnDeath. No se podrá rastrear su destrucción.");
+                    Debug.LogWarning("El enemigo spawneado no tiene un componente EnemyHealth con un evento OnDeath. No se podra rastrear su destruccion.");
                 }
             }
-            yield return new WaitForSeconds(0.5f); // Pequeña pausa entre spawns
+            yield return new WaitForSeconds(0.5f); // Pequeï¿½a pausa entre spawns
         }
     }
 
@@ -72,9 +72,9 @@ public class SpawnManager : MonoBehaviour
 
         if (currentEnemiesAlive <= 0)
         {
-            Debug.Log("¡Oleada despejada!");
+            Debug.Log("Oleada despejada!");
             OnWaveCleared.Invoke();
-            // Aquí podrías iniciar la siguiente oleada o finalizar el nivel
+            // Aquï¿½ podrï¿½as iniciar la siguiente oleada o finalizar el nivel
         }
     }
 
