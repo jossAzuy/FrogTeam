@@ -5,10 +5,10 @@ using System.Linq;
 
 public class SpawnManager : MonoBehaviour
 {
-    [Header("Configuracion de Spawn")]
+    [Header("Configuración de Spawn")]
     [Tooltip("Prefab del enemigo a spawnear.")]
     public GameObject enemyPrefab;
-    [Tooltip("Lista de Transforms que actuan como puntos de aparicion.")]
+    [Tooltip("Lista de Transforms que actúan como puntos de aparición.")]
     public Transform[] spawnPoints;
     [Tooltip("Cantidad de enemigos a spawnear en esta oleada.")]
     public int enemiesToSpawn = 5;
@@ -30,7 +30,7 @@ public class SpawnManager : MonoBehaviour
         }
         if (spawnPoints == null || spawnPoints.Length == 0)
         {
-            Debug.LogError("No hay puntos de aparicion asignados en el SpawnManager.");
+            Debug.LogError("No hay puntos de aparición asignados en el SpawnManager.");
             enabled = false;
             return;
         }
@@ -40,17 +40,22 @@ public class SpawnManager : MonoBehaviour
 
     IEnumerator SpawnWave()
     {
+        List<Transform> availableSpawnPoints = new List<Transform>(spawnPoints); // Copia los puntos de spawn a una lista temporal
+
         for (int i = 0; i < enemiesToSpawn; i++)
         {
-            if (spawnPoints.Length > 0)
+            if (availableSpawnPoints.Count > 0)
             {
-                int randomSpawnPointIndex = Random.Range(0, spawnPoints.Length);
-                Transform spawnPoint = spawnPoints[randomSpawnPointIndex];
+                int randomSpawnPointIndex = Random.Range(0, availableSpawnPoints.Count);
+                Transform spawnPoint = availableSpawnPoints[randomSpawnPointIndex];
                 GameObject newEnemy = Instantiate(enemyPrefab, spawnPoint.position, spawnPoint.rotation);
                 spawnedEnemies.Add(newEnemy);
                 currentEnemiesAlive++;
 
-                // Asegurarse de que el enemigo tenga un componente que notifique su destrucci�n
+                // Eliminar el punto de spawn usado de la lista temporal
+                availableSpawnPoints.RemoveAt(randomSpawnPointIndex);
+
+                // Asegurarse de que el enemigo tenga un componente que notifique su destrucción
                 EnemyHealth enemyHealth = newEnemy.GetComponent<EnemyHealth>(); // Asume que los enemigos tienen un script EnemyHealth
                 if (enemyHealth != null)
                 {
@@ -58,10 +63,15 @@ public class SpawnManager : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogWarning("El enemigo spawneado no tiene un componente EnemyHealth con un evento OnDeath. No se podra rastrear su destruccion.");
+                    Debug.LogWarning("El enemigo spawneado no tiene un componente EnemyHealth con un evento OnDeath. No se podrá rastrear su destrucción.");
                 }
             }
-            yield return new WaitForSeconds(0.5f); // Peque�a pausa entre spawns
+            else
+            {
+                Debug.LogWarning("No quedan puntos de aparición disponibles para spawnear más enemigos.");
+                break; // Sale del bucle si no hay más puntos de spawn
+            }
+            yield return new WaitForSeconds(0.5f); // Pequeña pausa entre spawns
         }
     }
 
@@ -72,9 +82,9 @@ public class SpawnManager : MonoBehaviour
 
         if (currentEnemiesAlive <= 0)
         {
-            Debug.Log("Oleada despejada!");
+            Debug.Log("¡Oleada despejada!");
             OnWaveCleared.Invoke();
-            // Aqu� podr�as iniciar la siguiente oleada o finalizar el nivel
+            // Aquí podrías iniciar la siguiente oleada o finalizar el nivel
         }
     }
 
